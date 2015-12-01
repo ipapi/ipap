@@ -7,7 +7,7 @@ Image Processing and Analysis (IPA) Project, Gjøvik University College, 2015
 
 #### Ubuntu
 
-`sudo apt-get install python-pyqt5`
+`sudo apt-get install python3-pyqt5`
 
 #### Other
 
