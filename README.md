@@ -17,6 +17,6 @@ Download PyQt5 from https://riverbankcomputing.com/software/pyqt/download5
 
 `./setup.py develop`
 
-#### Run
+### Run
 
 `python3 ipap`
