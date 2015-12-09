@@ -21,10 +21,18 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QDoubleValidator
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QColor
 
 from ipap.core.imageprocessor import ImageProcessor
 from ipap.core.image import Image
+
+
+def grayscale_colortable():
+    table = []
+    for i in range(0, 256):
+        color = QColor(i, i, i)
+        table.append(color.rgb())
+    return table
 
 
 def make_qimage(image):
@@ -37,6 +45,40 @@ def make_qimage(image):
     return qimage
 
 
+def make_dft_mag_qimage(image):
+    imageformat = QImage.Format_RGBA8888
+    imagedata = image.dft_magnitude
+    # print(imagedata)
+    print(imagedata.flatten())
+    qimage = QImage(imagedata.flatten(),
+                    imagedata.shape[1],
+                    imagedata.shape[0],
+                    imageformat)
+    return qimage
+
+
+def make_dft_real_qimage(image):
+    imageformat = QImage.Format_Indexed8
+    imagedata = image.dft_real
+    qimage = QImage(imagedata.flatten(),
+                    imagedata.shape[1],
+                    imagedata.shape[0],
+                    imageformat)
+    qimage.setColorTable(grayscale_colortable())
+    return qimage
+
+
+def make_dft_imag_qimage(image):
+    imageformat = QImage.Format_Indexed8
+    imagedata = image.dft_imag
+    qimage = QImage(imagedata.flatten(),
+                    imagedata.shape[1],
+                    imagedata.shape[0],
+                    imageformat)
+    qimage.setColorTable(grayscale_colortable())
+    return qimage
+
+
 class MainWindow(QMainWindow):
 
     def __init__(self, app):
@@ -44,11 +86,11 @@ class MainWindow(QMainWindow):
         self._app = app
 
         self.processor = ImageProcessor()
-        image = Image.from_file('test.jpg')
+        image = Image.from_file('test5.png')
         self.processor.original = image
 
-        # self.processor.filter_type = 'highpass'
-        # self.processor.filter_function = 'gauss'
+        # self.processor.filter_type = 'lowpass'
+        # self.processor.filter_function = 'ideal'
         self.processor.apply()
 
         self.initui()
@@ -58,7 +100,6 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap.fromImage(make_qimage(image))
         self.imageLabel = QLabel()
         self.imageLabel.setPixmap(pixmap)
-
         self.setCentralWidget(self.imageLabel)
         self.statusBar()
 

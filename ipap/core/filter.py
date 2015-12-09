@@ -53,17 +53,22 @@ def highpass_butterworth(value, cutoff, n):
     return 1 / (1 + (cutoff / value)**(2*n))
 
 
-def apply_filter(data, function):
+def apply_filter(data, filter):
     filtered = np.zeros(data.shape)
     for u in range(0, data.shape[0]):
         for v in range(0, data.shape[1]):
             value = distance(u, v, data)
-            print(value)
-            result = function(value)
-            # print(result)
-            filtered[u][v] = result
+            filtered[u][v] = data[u][v] * function(value)
 
     return filtered
+
+
+def ideal(filtertype, data, cutoff):
+    def filter(value):
+        func = globals()[filtertype + '_ideal']
+        return func(value, cutoff)
+
+    return apply_filter(data, filter)
 
 
 def gauss(filtertype, data, cutoff):

@@ -17,7 +17,17 @@ class Image:
 
         image.data = np.asarray(pilimage, dtype=np.uint8)
         image._pil = pilimage
-        image._dft = np.fft.fft2(image.data)
+        flatshape = (image.data.shape[0], image.data.shape[1])
+        rdata = np.reshape(np.delete(image.data, [1, 2, 3], 2), flatshape)
+        gdata = np.reshape(np.delete(image.data, [0, 2, 3], 2), flatshape)
+        bdata = np.reshape(np.delete(image.data, [0, 1, 3], 2), flatshape)
+        adata = np.reshape(np.delete(image.data, [0, 1, 2], 2), flatshape)
+        image._dft = np.array([
+            np.fft.fft2(rdata),
+            np.fft.fft2(gdata),
+            np.fft.fft2(bdata),
+            np.fft.fft2(adata)
+        ])
 
         return image
 
@@ -34,11 +44,32 @@ class Image:
     @dft.setter
     def dft(self, data):
         self._dft = data
-        self.data = np.fft.ifft2(self._dft).real.astype(np.uint8)
+        size = self._dft[0].shape[0]
+        self.data = np.concatenate(
+            (
+                np.split(np.fft.ifft2(self._dft[0]).astype(np.uint8), size, axis=1),
+                np.split(np.fft.ifft2(self._dft[1]).astype(np.uint8), size, axis=1),
+                np.split(np.fft.ifft2(self._dft[2]).astype(np.uint8), size, axis=1),
+                np.split(np.fft.ifft2(self._dft[3]).astype(np.uint8), size, axis=1)
+            ),
+            axis=2
+        )
 
     @property
     def dft_magnitude(self):
-        return abs(self.dft)
+        oldshape = self.dft[0].shape
+        shape = (oldshape[0], oldshape[1], 1)
+        rgba = np.concatenate(
+            (
+                np.split(np.fft.fftshift(self.dft[0]) / 65000 * 255, self.dft[0].shape[0], axis=1),
+                np.split(np.fft.fftshift(self.dft[1]) / 65000 * 255, self.dft[1].shape[0], axis=1),
+                np.split(np.fft.fftshift(self.dft[2]) / 65000 * 255, self.dft[2].shape[0], axis=1),
+                np.ones(shape) * 255
+            ),
+            axis=2
+        )
+
+        return abs(rgba).astype(np.uint8)
 
     @property
     def dft_real(self):
