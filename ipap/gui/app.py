@@ -3,20 +3,20 @@ import sys
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
+    QMainWindow,
+    QAction,
     QPushButton,
     QMessageBox,
-    QAction,
     QFileDialog,
-    QMainWindow,
-    QTextEdit,
-    QProgressBar,
     QStatusBar,
     QDockWidget,
     QFormLayout,
     QGroupBox,
     QComboBox,
     QLabel,
-    QLineEdit
+    QLineEdit,
+    QGridLayout,
+    QFrame
 )
 
 from PyQt5.QtCore import Qt
@@ -86,8 +86,7 @@ class MainWindow(QMainWindow):
         self._app = app
 
         self.processor = ImageProcessor()
-        image = Image.from_file('test5.png')
-        self.processor.original = image
+        self.processor.original = Image.from_file('lena.png')
 
         # self.processor.filter_type = 'lowpass'
         # self.processor.filter_function = 'ideal'
@@ -96,11 +95,38 @@ class MainWindow(QMainWindow):
         self.initui()
 
     def initui(self):
-        image = self.processor.output
-        pixmap = QPixmap.fromImage(make_qimage(image))
-        self.imageLabel = QLabel()
-        self.imageLabel.setPixmap(pixmap)
-        self.setCentralWidget(self.imageLabel)
+        originalimage = self.processor.original
+        originalpixelmap = QPixmap.fromImage(make_qimage(originalimage))
+
+        # Images
+        imageoriginal = QLabel("Original")
+        imageoriginal.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        imageoriginal.setPixmap(originalpixelmap)
+
+        imagereconstructed = QLabel("Reconstructed")
+        imagereconstructed.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+
+        imagemagnitude = QLabel("Magnitude")
+        imagemagnitude.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+
+        imagerealpart = QLabel("Real part")
+        imagerealpart.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+
+        imageimaginarypart = QLabel("Imaginary part")
+        imageimaginarypart.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+
+        mainlayout = QGridLayout()
+        mainlayout.addWidget(imageoriginal, 0, 0, Qt.AlignCenter)
+        mainlayout.addWidget(imagereconstructed, 1, 0, Qt.AlignCenter)
+
+        mainlayout.addWidget(imagemagnitude, 0, 1, 1, 2, Qt.AlignCenter)
+        mainlayout.addWidget(imagerealpart, 1, 1, Qt.AlignCenter)
+        mainlayout.addWidget(imageimaginarypart, 1, 2, Qt.AlignCenter)
+
+        mainwidget = QWidget()
+        mainwidget.setLayout(mainlayout)
+
+        self.setCentralWidget(mainwidget)
         self.statusBar()
 
         self.initoptionspanel()
@@ -171,14 +197,29 @@ class MainWindow(QMainWindow):
         formlayout.addRow('Bandwidth', filterbandwidth)
         formlayout.addRow('Order', self.filterorder)
 
-        groupbox = QGroupBox('Filter')
-        groupbox.setLayout(formlayout)
+        filterbox = QGroupBox('Filter')
+        filterbox.setLayout(formlayout)
 
-        dock = QDockWidget('Options', self)
-        dock.setFeatures(QDockWidget.DockWidgetFloatable)
-        dock.setFeatures(QDockWidget.DockWidgetMovable)
-        dock.setWidget(groupbox)
-        self.addDockWidget(Qt.RightDockWidgetArea, dock)
+        options = QDockWidget('Options', self)
+        options.setFeatures(QDockWidget.DockWidgetFloatable)
+        options.setFeatures(QDockWidget.DockWidgetMovable)
+        options.setWidget(filterbox)
+
+        equallabel = QLabel('No image selected')
+
+        infoform = QFormLayout()
+        infoform.addRow('Equal:', equallabel)
+
+        imagebox = QGroupBox('Image')
+        imagebox.setLayout(infoform)
+
+        information = QDockWidget('Information', self)
+        information.setFeatures(QDockWidget.DockWidgetFloatable)
+        information.setFeatures(QDockWidget.DockWidgetMovable)
+        information.setWidget(imagebox)
+
+        self.addDockWidget(Qt.RightDockWidgetArea, options)
+        self.addDockWidget(Qt.RightDockWidgetArea, information)
 
     def filtercutofflistener(self, value):
         print('cutoff', value)
@@ -197,7 +238,7 @@ class MainWindow(QMainWindow):
         self.filterorder.setEnabled(index == 1)
 
     def showdialog(self):
-        fname = QFileDialog.getOpenFileName(self,'Open file', '/home')
+        fname = QFileDialog.getOpenFileName(self,'Open file', '/Users/Thomas')
 
         if fname[0]:
             f = open(fname[0], encoding="utf8")
