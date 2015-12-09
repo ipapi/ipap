@@ -11,7 +11,7 @@ config = {
     'url': 'https://github.com/ipapi/ipap',
     'author_email': 'mbvett@gmail.com',
     'version': '0.1',
-    'install_requires': [''],
+    'install_requires': ['numpy', 'pillow'],
     'packages': ['ipap'],
     'scripts': [],
     'name': 'ipap',
