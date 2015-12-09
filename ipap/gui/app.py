@@ -1,4 +1,5 @@
 import sys
+
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -20,17 +21,45 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QDoubleValidator
+from PyQt5.QtGui import QImage, QPixmap
+
+from ipap.core.imageprocessor import ImageProcessor
+from ipap.core.image import Image
+
+
+def make_qimage(image):
+    imageformat = QImage.Format_RGBA8888
+    imagedata = image.data
+    qimage = QImage(imagedata.flatten(),
+                    imagedata.shape[1],
+                    imagedata.shape[0],
+                    imageformat)
+    return qimage
+
 
 class MainWindow(QMainWindow):
 
     def __init__(self, app):
         super().__init__()
         self._app = app
+
+        self.processor = ImageProcessor()
+        image = Image.from_file('test.jpg')
+        self.processor.original = image
+
+        # self.processor.filter_type = 'highpass'
+        # self.processor.filter_function = 'gauss'
+        self.processor.apply()
+
         self.initui()
 
     def initui(self):
-        self.textEdit = QTextEdit()
-        self.setCentralWidget(self.textEdit)
+        image = self.processor.output
+        pixmap = QPixmap.fromImage(make_qimage(image))
+        self.imageLabel = QLabel()
+        self.imageLabel.setPixmap(pixmap)
+
+        self.setCentralWidget(self.imageLabel)
         self.statusBar()
 
         self.initoptionspanel()
