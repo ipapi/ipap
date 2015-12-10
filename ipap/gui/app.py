@@ -17,7 +17,8 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QDoubleSpinBox,
     QGridLayout,
-    QFrame
+    QFrame,
+    QVBoxLayout
 )
 
 from PyQt5.QtCore import Qt
@@ -106,20 +107,79 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Ipap")
 
     def initlabels(self):
-        self.originalimage_label = QLabel('Original Image')
-        self.originalimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-        self.reconstructedimage_label = QLabel("Reconstructed Image")
-        self.reconstructedimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-        self.magnitudeimage_label = QLabel("Magnitude Image")
-        self.magnitudeimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-        self.realpartimage_label = QLabel("Real Part Image")
-        self.realpartimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-        self.imaginarypartimage_label = QLabel("Imaginary Part Image")
-        self.imaginarypartimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        # Initialize image containers
+        self.originalimage_container = QLabel('Original Image Placeholder')
+        self.originalimage_magnitude_container = QLabel('Original Magnitude Placeholder')
+        self.originalimage_realpart_container = QLabel('Original Real Part Placeholder')
+        self.originalimage_imaginarypart_container = QLabel('Original Imaginary Part Placeholder')
+        self.originalimage_phase_container = QLabel('Original Phase Placeholder')
+        self.reconstructedimage_container = QLabel('Reconstructed Image Placeholder')
+        self.reconstructedimage_magnitude_container = QLabel('Reconstructed Magnitude Placeholder')
+        self.reconstructedimage_realpart_container = QLabel('Reconstructed Imaginary Part Placeholder')
+        self.reconstructedimage_imaginarypart_container = QLabel('Reconstructed Real Part Placeholder')
+        self.reconstructedimage_phase_container = QLabel('Reconstructed Phase Placeholder')
+
+        # Original image container layout
+        originalimage_boxlayout = QVBoxLayout()
+        originalimage_boxlayout.addWidget(QLabel('Original Image'))
+        originalimage_boxlayout.addWidget(self.originalimage_container)
+        originalimage_magnitude_boxlayout = QVBoxLayout()
+        originalimage_magnitude_boxlayout.addWidget(QLabel('Magnitude'))
+        originalimage_magnitude_boxlayout.addWidget(self.originalimage_magnitude_container)
+        originalimage_realpart_boxlayout = QVBoxLayout()
+        originalimage_realpart_boxlayout.addWidget(QLabel('Real Part'))
+        originalimage_realpart_boxlayout.addWidget(self.originalimage_realpart_container)
+        originalimage_imaginarypart_boxlayout = QVBoxLayout()
+        originalimage_imaginarypart_boxlayout.addWidget(QLabel('Imaginary Part'))
+        originalimage_imaginarypart_boxlayout.addWidget(self.originalimage_imaginarypart_container)
+        originalimage_phase_boxlayout = QVBoxLayout()
+        originalimage_phase_boxlayout.addWidget(QLabel('Phase'))
+        originalimage_phase_boxlayout.addWidget(self.originalimage_phase_container)
+
+        # Reconstructed image container layout
+        reconstructedimage_boxlayout = QVBoxLayout()
+        reconstructedimage_boxlayout.addWidget(QLabel('Reconstructed Image'))
+        reconstructedimage_boxlayout.addWidget(self.reconstructedimage_container)
+        reconstructedimage_magnitude_boxlayout = QVBoxLayout()
+        reconstructedimage_magnitude_boxlayout.addWidget(QLabel('Magnitude'))
+        reconstructedimage_magnitude_boxlayout.addWidget(self.reconstructedimage_magnitude_container)
+        reconstructedimage_realpart_boxlayout = QVBoxLayout()
+        reconstructedimage_realpart_boxlayout.addWidget(QLabel('Real Part'))
+        reconstructedimage_realpart_boxlayout.addWidget(self.reconstructedimage_realpart_container)
+        reconstructedimage_imaginarypart_boxlayout = QVBoxLayout()
+        reconstructedimage_imaginarypart_boxlayout.addWidget(QLabel('Imaginary Part'))
+        reconstructedimage_imaginarypart_boxlayout.addWidget(self.reconstructedimage_imaginarypart_container)
+        reconstructedimage_phase_boxlayout = QVBoxLayout()
+        reconstructedimage_phase_boxlayout.addWidget(QLabel('Phase'))
+        reconstructedimage_phase_boxlayout.addWidget(self.reconstructedimage_phase_container)
+
+        # Widgets holding a title and an image
+        self.originalimage_box = QWidget()
+        self.originalimage_magnitude_box = QWidget()
+        self.originalimage_realpart_box = QWidget()
+        self.originalimage_imaginarypart_box = QWidget()
+        self.originalimage_phase_box = QWidget()
+        self.reconstructedimage_box = QWidget()
+        self.reconstructedimage_magnitude_box = QWidget()
+        self.reconstructedimage_realpart_box = QWidget()
+        self.reconstructedimage_imaginarypart_box = QWidget()
+        self.reconstructedimage_phase_box = QWidget()
+
+        # Set corresponding layout to each widget
+        self.originalimage_box.setLayout(originalimage_boxlayout)
+        self.originalimage_magnitude_box.setLayout(originalimage_magnitude_boxlayout)
+        self.originalimage_realpart_box.setLayout(originalimage_realpart_boxlayout)
+        self.originalimage_imaginarypart_box.setLayout(originalimage_imaginarypart_boxlayout)
+        self.originalimage_phase_box.setLayout(originalimage_phase_boxlayout)
+        self.reconstructedimage_box.setLayout(reconstructedimage_boxlayout)
+        self.reconstructedimage_magnitude_box.setLayout(reconstructedimage_magnitude_boxlayout)
+        self.reconstructedimage_realpart_box.setLayout(reconstructedimage_realpart_boxlayout)
+        self.reconstructedimage_imaginarypart_box.setLayout(reconstructedimage_imaginarypart_boxlayout)
+        self.reconstructedimage_phase_box.setLayout(reconstructedimage_phase_boxlayout)
 
     def updateimages(self):
         originalimage = self.processor.original
-        self.originalimage_label.setPixmap(QPixmap.fromImage(make_qimage(originalimage)))
+        self.originalimage_container.setPixmap(QPixmap.fromImage(make_qimage(originalimage)))
 
     def initmenubar(self):
         opennewfile = QAction('Open File', self)
@@ -211,11 +271,18 @@ class MainWindow(QMainWindow):
 
     def initcentralwidget(self):
         mainlayout = QGridLayout()
-        mainlayout.addWidget(self.originalimage_label, 0, 0, Qt.AlignCenter)
-        mainlayout.addWidget(self.reconstructedimage_label, 1, 0, Qt.AlignCenter)
-        mainlayout.addWidget(self.magnitudeimage_label, 0, 1, 1, 2, Qt.AlignCenter)
-        mainlayout.addWidget(self.realpartimage_label, 1, 1, Qt.AlignCenter)
-        mainlayout.addWidget(self.imaginarypartimage_label, 1, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_box, 0, 0, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_magnitude_box, 0, 1, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_realpart_box, 0, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_imaginarypart_box, 0, 3, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_phase_box, 0, 4, Qt.AlignCenter)
+
+        mainlayout.addWidget(self.reconstructedimage_box, 1, 0, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_magnitude_box, 1, 1, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_realpart_box, 1, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_imaginarypart_box, 1, 3, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_phase_box, 1, 4, Qt.AlignCenter)
+
         centralwidget = QWidget()
         centralwidget.setLayout(mainlayout)
         return centralwidget
