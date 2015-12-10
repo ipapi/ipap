@@ -195,11 +195,10 @@ class MainWindow(QMainWindow):
         self.originalimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
         self.originalimage_phase_container.setPixmap(QPixmap.fromImage(make_dftphase_qimage(self.processor.original)))
 
-        self.reconstructedimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.original)))
-
-        self.reconstructedimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.original)))
-        self.reconstructedimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.original)))
-        self.reconstructedimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
+        self.reconstructedimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.output)))
+        self.reconstructedimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.output)))
+        self.reconstructedimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.output)))
+        self.reconstructedimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.output)))
         self.reconstructedimage_phase_container.setPixmap(QPixmap.fromImage(make_dftphase_qimage(self.processor.output)))
 
     def initmenubar(self):
