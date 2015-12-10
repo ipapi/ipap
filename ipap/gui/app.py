@@ -364,8 +364,8 @@ class MainWindow(QMainWindow):
             None,
             'lowpass',
             'highpass',
-            'reject',
-            'accept'
+            'bandreject',
+            'bandpass'
         ]
 
         self.processor.filter_type = typemap[index]

@@ -20,6 +20,15 @@ class ImageProcessor:
         # Width of the band when using 'bandpass' or 'bandreject'
         self.band_width = 1.0
 
+    def _ideal(self, value):
+        return filter.ideal(value, self.filter_cutoff, ftype=self.filter_type, bwidth=self.band_width)
+
+    def _gauss(self, value):
+        return filter.gauss(value, self.filter_cutoff, ftype=self.filter_type, bwidth=self.band_width)
+
+    def _butterworth(self, value):
+        return filter.butterworth(value, self.filter_cutoff, self.band_width, ftype=self.filter_type, bwidth=self.band_width)
+
     def apply(self):
         print("Applying {}_{} with cutoff {} and bandwidth {}".format(self.filter_type,
                                                                       self.filter_function,
@@ -27,19 +36,13 @@ class ImageProcessor:
                                                                       self.band_width))
         if self.filter_type is None:
             self.output.dft = self.original.dft
-        elif self.filter_function == 'ideal':
-            self.output.dft = filter.ideal(self.filter_type,
-                                           self.original.dft,
-                                           self.filter_cutoff)
-        elif self.filter_function == 'gauss':
-            self.output.dft = filter.gauss(self.filter_type,
-                                           self.original.dft,
-                                           self.filter_cutoff)
-        elif self.filter_function == 'butterworth':
-            self.output.dft = filter.butterworth(self.filter_type,
-                                                 self.original.dft,
-                                                 self.filter_cutoff,
-                                                 self.filter_order)
+        else:
+            if self.filter_function == 'ideal':
+                self.output.dft = filter.apply_filter(self.original.dft, lambda value: self._ideal(value))
+            if self.filter_function == 'gauss':
+                self.output.dft = filter.apply_filter(self.original.dft, lambda value: self._gauss(value))
+            if self.filter_function == 'butterworth':
+                self.output.dft = filter.apply_filter(self.original.dft, lambda value: self._butterworth(value))
 
     def mse(self):
         #self.original._pil.getdata(band=0)
