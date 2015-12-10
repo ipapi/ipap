@@ -113,7 +113,6 @@ class MainWindow(QMainWindow):
         centralwidget = self.initcentralwidget()
         self.setCentralWidget(centralwidget)
         self.statusBar()
-        self.setGeometry(100, 100, 1080, 720)
         self.setWindowTitle("Ipap")
 
     def initlabels(self):
@@ -201,16 +200,16 @@ class MainWindow(QMainWindow):
         reconstructedimage_phase_pixelmap = QPixmap.fromImage(make_dftphase_qimage(self.processor.output))
 
         # Scale each image by 200 x 200
-        originalimage_pixelmap = originalimage_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        originalimage_magnitude_pixelmap = originalimage_magnitude_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        originalimage_realpart_pixelmap = originalimage_realpart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        originalimage_imaginarypart_pixelmap = originalimage_imaginarypart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        originalimage_phase_pixelmap = originalimage_phase_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        reconstructedimage_pixelmap = reconstructedimage_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        reconstructedimage_magnitude_pixelmap = reconstructedimage_magnitude_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        reconstructedimage_realpart_pixelmap = reconstructedimage_realpart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        reconstructedimage_imaginarypart_pixelmap = reconstructedimage_imaginarypart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
-        reconstructedimage_phase_pixelmap = reconstructedimage_phase_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        originalimage_pixelmap = originalimage_pixelmap.scaled(250,250, Qt.KeepAspectRatio)
+        originalimage_magnitude_pixelmap = originalimage_magnitude_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        originalimage_realpart_pixelmap = originalimage_realpart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        originalimage_imaginarypart_pixelmap = originalimage_imaginarypart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        originalimage_phase_pixelmap = originalimage_phase_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        reconstructedimage_pixelmap = reconstructedimage_pixelmap.scaled(250,250, Qt.KeepAspectRatio)
+        reconstructedimage_magnitude_pixelmap = reconstructedimage_magnitude_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        reconstructedimage_realpart_pixelmap = reconstructedimage_realpart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        reconstructedimage_imaginarypart_pixelmap = reconstructedimage_imaginarypart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        reconstructedimage_phase_pixelmap = reconstructedimage_phase_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
 
         # Update image containers
         self.originalimage_container.setPixmap(originalimage_pixelmap)
@@ -223,7 +222,6 @@ class MainWindow(QMainWindow):
         self.reconstructedimage_realpart_container.setPixmap(reconstructedimage_realpart_pixelmap)
         self.reconstructedimage_imaginarypart_container.setPixmap(reconstructedimage_imaginarypart_pixelmap)
         self.reconstructedimage_phase_container.setPixmap(reconstructedimage_phase_pixelmap)
-
 
     def initmenubar(self):
         openfile_other = QAction('Open File', self)
@@ -316,17 +314,17 @@ class MainWindow(QMainWindow):
 
     def initcentralwidget(self):
         mainlayout = QGridLayout()
-        mainlayout.addWidget(self.originalimage_box, 0, 0, Qt.AlignCenter)
-        mainlayout.addWidget(self.originalimage_magnitude_box, 0, 1, Qt.AlignCenter)
-        mainlayout.addWidget(self.originalimage_realpart_box, 0, 2, Qt.AlignCenter)
-        mainlayout.addWidget(self.originalimage_imaginarypart_box, 0, 3, Qt.AlignCenter)
-        mainlayout.addWidget(self.originalimage_phase_box, 0, 4, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_box, 0, 0, 2, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_magnitude_box, 0, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_phase_box, 0, 3, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_realpart_box, 1, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.originalimage_imaginarypart_box, 1, 3, Qt.AlignCenter)
 
-        mainlayout.addWidget(self.reconstructedimage_box, 1, 0, Qt.AlignCenter)
-        mainlayout.addWidget(self.reconstructedimage_magnitude_box, 1, 1, Qt.AlignCenter)
-        mainlayout.addWidget(self.reconstructedimage_realpart_box, 1, 2, Qt.AlignCenter)
-        mainlayout.addWidget(self.reconstructedimage_imaginarypart_box, 1, 3, Qt.AlignCenter)
-        mainlayout.addWidget(self.reconstructedimage_phase_box, 1, 4, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_box, 2, 0, 2, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_magnitude_box, 2, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_phase_box, 2, 3, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_realpart_box, 3, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_imaginarypart_box, 3, 3, Qt.AlignCenter)
 
         centralwidget = QWidget()
         centralwidget.setLayout(mainlayout)
