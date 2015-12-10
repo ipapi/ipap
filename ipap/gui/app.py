@@ -77,6 +77,17 @@ def make_dftimag_qimage(image):
     return qimage
 
 
+def make_dftphase_qimage(image):
+    imageformat = QImage.Format_RGBA8888
+    imagedata = image.dft_phase
+    print(imagedata)
+    qimage = QImage(imagedata.flatten(),
+                    imagedata.shape[1],
+                    imagedata.shape[0],
+                    imageformat)
+    return qimage
+
+
 class MainWindow(QMainWindow):
 
     def __init__(self, app):
@@ -182,12 +193,14 @@ class MainWindow(QMainWindow):
         self.originalimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.original)))
         self.originalimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.original)))
         self.originalimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
+        self.originalimage_phase_container.setPixmap(QPixmap.fromImage(make_dftphase_qimage(self.processor.original)))
 
         self.reconstructedimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.original)))
 
         self.reconstructedimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.original)))
         self.reconstructedimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.original)))
         self.reconstructedimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
+        self.reconstructedimage_phase_container.setPixmap(QPixmap.fromImage(make_dftphase_qimage(self.processor.output)))
 
     def initmenubar(self):
         openfile_other = QAction('Open File', self)

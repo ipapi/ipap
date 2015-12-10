@@ -101,3 +101,10 @@ class Image:
         rgb = rgb * (255 / np.amax(rgb))
 
         return self._add_alpha(rgb).astype(np.uint8)
+
+    @property
+    def dft_phase(self):
+        rgb = np.angle(self.dft_rgb)
+        rgb = rgb * (255 / np.amax(rgb))
+
+        return self._add_alpha(rgb).astype(np.uint8)
