@@ -15,13 +15,14 @@ class Image:
 
         image = Image()
 
-        image.data = np.asarray(pilimage, dtype=np.uint8)
         image._pil = pilimage
-        flatshape = (image.data.shape[0], image.data.shape[1])
-        rdata = np.reshape(np.delete(image.data, [1, 2, 3], 2), flatshape)
-        gdata = np.reshape(np.delete(image.data, [0, 2, 3], 2), flatshape)
-        bdata = np.reshape(np.delete(image.data, [0, 1, 3], 2), flatshape)
-        adata = np.reshape(np.delete(image.data, [0, 1, 2], 2), flatshape)
+        image.data = np.asarray(pilimage, dtype=np.uint8)
+
+        rdata = np.reshape(np.asarray(pilimage.getdata(band=0)), pilimage.size[::-1])
+        gdata = np.reshape(np.asarray(pilimage.getdata(band=1)), pilimage.size[::-1])
+        bdata = np.reshape(np.asarray(pilimage.getdata(band=2)), pilimage.size[::-1])
+        adata = np.reshape(np.asarray(pilimage.getdata(band=3)), pilimage.size[::-1])
+
         image._dft = np.array([
             np.fft.fft2(rdata),
             np.fft.fft2(gdata),
@@ -44,8 +45,8 @@ class Image:
     @dft.setter
     def dft(self, data):
         self._dft = data
-        size = self._dft[0].shape[0]
-        self.data = np.concatenate(
+        size = self._dft[0].shape[1]
+        data = np.concatenate(
             (
                 np.split(np.fft.ifft2(self._dft[0]).astype(np.uint8), size, axis=1),
                 np.split(np.fft.ifft2(self._dft[1]).astype(np.uint8), size, axis=1),
@@ -54,27 +55,49 @@ class Image:
             ),
             axis=2
         )
+        self.data = np.transpose(data, axes=[1, 0, 2])
 
     @property
-    def dft_magnitude(self):
-        oldshape = self.dft[0].shape
-        shape = (oldshape[0], oldshape[1], 1)
-        rgba = np.concatenate(
+    def dft_rgb(self):
+        rgb = np.concatenate(
             (
-                np.split(np.fft.fftshift(self.dft[0]) / 65000 * 255, self.dft[0].shape[0], axis=1),
-                np.split(np.fft.fftshift(self.dft[1]) / 65000 * 255, self.dft[1].shape[0], axis=1),
-                np.split(np.fft.fftshift(self.dft[2]) / 65000 * 255, self.dft[2].shape[0], axis=1),
-                np.ones(shape) * 255
+                np.split(np.fft.fftshift(self.dft[0]), self.dft[0].shape[1], axis=1),
+                np.split(np.fft.fftshift(self.dft[1]), self.dft[1].shape[1], axis=1),
+                np.split(np.fft.fftshift(self.dft[2]), self.dft[2].shape[1], axis=1)
+            ),
+            axis=2
+        )
+        rgb = np.transpose(rgb, axes=[1, 0, 2])
+
+        return rgb
+
+    def _add_alpha(self, rgb):
+        oldshape = self.dft[0].shape
+        return np.concatenate(
+            (
+                rgb,
+                np.ones((oldshape[0], oldshape[1], 1)) * 255
             ),
             axis=2
         )
 
-        return abs(rgba).astype(np.uint8)
+    @property
+    def dft_magnitude(self):
+        rgb = np.log(abs(self.dft_rgb))
+        rgb = rgb * (255 / np.amax(rgb))
+
+        return self._add_alpha(rgb).astype(np.uint8)
 
     @property
     def dft_real(self):
-        return self.dft.real
+        rgb = np.log(abs(self.dft_rgb.real))
+        rgb = rgb * (255 / np.amax(rgb))
+
+        return self._add_alpha(rgb).astype(np.uint8)
 
     @property
     def dft_imag(self):
-        return self.dft.imag
+        rgb = np.log(abs(self.dft_rgb.imag))
+        rgb = rgb * (255 / np.amax(rgb))
+
+        return self._add_alpha(rgb).astype(np.uint8)

@@ -46,10 +46,9 @@ def make_qimage(image):
     return qimage
 
 
-def make_dft_mag_qimage(image):
+def make_dftmag_qimage(image):
     imageformat = QImage.Format_RGBA8888
     imagedata = image.dft_magnitude
-    # print(imagedata)
     print(imagedata.flatten())
     qimage = QImage(imagedata.flatten(),
                     imagedata.shape[1],
@@ -58,25 +57,23 @@ def make_dft_mag_qimage(image):
     return qimage
 
 
-def make_dft_real_qimage(image):
-    imageformat = QImage.Format_Indexed8
+def make_dftreal_qimage(image):
+    imageformat = QImage.Format_RGBA8888
     imagedata = image.dft_real
     qimage = QImage(imagedata.flatten(),
                     imagedata.shape[1],
                     imagedata.shape[0],
                     imageformat)
-    qimage.setColorTable(grayscale_colortable())
     return qimage
 
 
-def make_dft_imag_qimage(image):
-    imageformat = QImage.Format_Indexed8
+def make_dftimag_qimage(image):
+    imageformat = QImage.Format_RGBA8888
     imagedata = image.dft_imag
     qimage = QImage(imagedata.flatten(),
                     imagedata.shape[1],
                     imagedata.shape[0],
                     imageformat)
-    qimage.setColorTable(grayscale_colortable())
     return qimage
 
 
