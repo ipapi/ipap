@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import (
     QComboBox,
     QLabel,
     QLineEdit,
+    QDoubleSpinBox,
     QGridLayout,
     QFrame
 )
@@ -91,49 +92,34 @@ class MainWindow(QMainWindow):
         # self.processor.filter_type = 'lowpass'
         # self.processor.filter_function = 'ideal'
         self.processor.apply()
-
         self.initui()
 
     def initui(self):
-        originalimage = self.processor.original
-        originalpixelmap = QPixmap.fromImage(make_qimage(originalimage))
-
-        # Images
-        imageoriginal = QLabel("Original")
-        imageoriginal.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-        imageoriginal.setPixmap(originalpixelmap)
-
-        imagereconstructed = QLabel("Reconstructed")
-        imagereconstructed.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-
-        imagemagnitude = QLabel("Magnitude")
-        imagemagnitude.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-
-        imagerealpart = QLabel("Real part")
-        imagerealpart.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-
-        imageimaginarypart = QLabel("Imaginary part")
-        imageimaginarypart.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
-
-        mainlayout = QGridLayout()
-        mainlayout.addWidget(imageoriginal, 0, 0, Qt.AlignCenter)
-        mainlayout.addWidget(imagereconstructed, 1, 0, Qt.AlignCenter)
-
-        mainlayout.addWidget(imagemagnitude, 0, 1, 1, 2, Qt.AlignCenter)
-        mainlayout.addWidget(imagerealpart, 1, 1, Qt.AlignCenter)
-        mainlayout.addWidget(imageimaginarypart, 1, 2, Qt.AlignCenter)
-
-        mainwidget = QWidget()
-        mainwidget.setLayout(mainlayout)
-
-        self.setCentralWidget(mainwidget)
-        self.statusBar()
-
-        self.initoptionspanel()
         self.initmenubar()
-
+        self.initoptionspanel()
+        self.initlabels()
+        self.updateimages()
+        centralwidget = self.initcentralwidget()
+        self.setCentralWidget(centralwidget)
+        self.statusBar()
         self.setGeometry(100, 100, 1080, 720)
         self.setWindowTitle("Ipap")
+
+    def initlabels(self):
+        self.originalimage_label = QLabel('Original Image')
+        self.originalimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        self.reconstructedimage_label = QLabel("Reconstructed Image")
+        self.reconstructedimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        self.magnitudeimage_label = QLabel("Magnitude Image")
+        self.magnitudeimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        self.realpartimage_label = QLabel("Real Part Image")
+        self.realpartimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        self.imaginarypartimage_label = QLabel("Imaginary Part Image")
+        self.imaginarypartimage_label.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+
+    def updateimages(self):
+        originalimage = self.processor.original
+        self.originalimage_label.setPixmap(QPixmap.fromImage(make_qimage(originalimage)))
 
     def initmenubar(self):
         opennewfile = QAction('Open File', self)
@@ -165,36 +151,38 @@ class MainWindow(QMainWindow):
         filtertype.addItem('Bravo')
         filtertype.currentIndexChanged.connect(self.filtertypelistener)
 
-        filterfunction = QComboBox()
-        filterfunction.addItem('None')
-        filterfunction.addItem('Charlie')
-        filterfunction.addItem('Delta')
-        filterfunction.addItem('Echo')
-        filterfunction.currentIndexChanged.connect(self.filterfunctionlistener)
+        self.filterfunction = QComboBox()
+        self.filterfunction.addItem('Charlie')
+        self.filterfunction.addItem('Delta')
+        self.filterfunction.addItem('Butterworth')
+        self.filterfunction.currentIndexChanged.connect(self.filterfunctionlistener)
+        self.filterfunction.setEnabled(False)
 
         doublevalidator = QDoubleValidator()
 
-        filtercutoff = QLineEdit()
-        filtercutoff.setText('0')
-        filtercutoff.setValidator(doublevalidator)
-        filtercutoff.textChanged.connect(self.filtercutofflistener)
+        self.filtercutoff = QDoubleSpinBox()
+        self.filtercutoff.setValue(0.0)
+        self.filtercutoff.setRange(-1000.0, 1000.0)
+        self.filtercutoff.valueChanged.connect(self.filtercutofflistener)
+        self.filtercutoff.setEnabled(False)
 
-        filterbandwidth = QLineEdit()
-        filterbandwidth.setText('0')
-        filterbandwidth.setValidator(doublevalidator)
-        filterbandwidth.textChanged.connect(self.filterbandwidthlistener)
+        self.filterbandwidth = QDoubleSpinBox()
+        self.filterbandwidth.setValue(0.0)
+        self.filterbandwidth.setRange(-1000.0, 1000.0)
+        self.filterbandwidth.valueChanged.connect(self.filterbandwidthlistener)
+        self.filterbandwidth.setEnabled(False)
 
-        self.filterorder = QLineEdit()
-        self.filterorder.setText('1')
-        self.filterorder.setValidator(doublevalidator)
-        self.filterorder.textChanged.connect(self.filterorderlistener)
+        self.filterorder = QDoubleSpinBox()
+        self.filterorder.setValue(1.0)
+        self.filterorder.setRange(-1000.0, 1000.0)
+        self.filterorder.valueChanged.connect(self.filterorderlistener)
         self.filterorder.setEnabled(False)
 
         formlayout = QFormLayout()
         formlayout.addRow('Type', filtertype)
-        formlayout.addRow('Function', filterfunction)
-        formlayout.addRow('Cut off', filtercutoff)
-        formlayout.addRow('Bandwidth', filterbandwidth)
+        formlayout.addRow('Function', self.filterfunction)
+        formlayout.addRow('Cut off', self.filtercutoff)
+        formlayout.addRow('Bandwidth', self.filterbandwidth)
         formlayout.addRow('Order', self.filterorder)
 
         filterbox = QGroupBox('Filter')
@@ -221,6 +209,17 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, options)
         self.addDockWidget(Qt.RightDockWidgetArea, information)
 
+    def initcentralwidget(self):
+        mainlayout = QGridLayout()
+        mainlayout.addWidget(self.originalimage_label, 0, 0, Qt.AlignCenter)
+        mainlayout.addWidget(self.reconstructedimage_label, 1, 0, Qt.AlignCenter)
+        mainlayout.addWidget(self.magnitudeimage_label, 0, 1, 1, 2, Qt.AlignCenter)
+        mainlayout.addWidget(self.realpartimage_label, 1, 1, Qt.AlignCenter)
+        mainlayout.addWidget(self.imaginarypartimage_label, 1, 2, Qt.AlignCenter)
+        centralwidget = QWidget()
+        centralwidget.setLayout(mainlayout)
+        return centralwidget
+
     def filtercutofflistener(self, value):
         print('cutoff', value)
 
@@ -232,19 +231,28 @@ class MainWindow(QMainWindow):
 
     def filtertypelistener(self, index):
         print('Type', index)
+        if index == 0:
+            self.filterfunction.setEnabled(False)
+            self.filterfunction.setCurrentIndex(0)
+            self.filtercutoff.setEnabled(False)
+            self.filtercutoff.setValue(0.0)
+            self.filterbandwidth.setEnabled(False)
+            self.filterbandwidth.setValue(0.0)
+            self.filterorder.setEnabled(False)
+            self.filterorder.setValue(1.0)
+        else:
+            self.filterfunction.setEnabled(True)
+            self.filtercutoff.setEnabled(True)
+            self.filterbandwidth.setEnabled(True)
 
     def filterfunctionlistener(self, index):
         print('Function', index)
-        self.filterorder.setEnabled(index == 1)
+        self.filterorder.setEnabled(index == 2)
+        if index != 2:
+            self.filterorder.setValue(1.0)
 
     def showdialog(self):
-        fname = QFileDialog.getOpenFileName(self,'Open file', '/Users/Thomas')
-
-        if fname[0]:
-            f = open(fname[0], encoding="utf8")
-            with f:
-                data = f.read()
-                self.textEdit.setText(data)
+        filename = QFileDialog.getOpenFileName(self, 'Open file', '/home')
 
     def closeEvent(self,event):
         reply = QMessageBox.question(
