@@ -15,7 +15,7 @@ def lowpass_ideal(value, cutoff):
 
 
 def highpass_ideal(value, cutoff):
-    if (value > cutoff):
+    if value > cutoff:
         return 1
     else:
         return 0
@@ -23,7 +23,7 @@ def highpass_ideal(value, cutoff):
 
 def bandreject_ideal(value, cutoff, width):
     offset = cutoff + width / 2
-    if (-offset <= value <= offset):
+    if -offset <= value <= offset:
         return 0
     else:
         return 1
@@ -31,7 +31,7 @@ def bandreject_ideal(value, cutoff, width):
 
 def bandpass_ideal(value, cutoff, width):
     offset = cutoff + width / 2
-    if (-offset <= value <= offset):
+    if -offset <= value <= offset:
         return 1
     else:
         return 0
@@ -54,11 +54,12 @@ def highpass_butterworth(value, cutoff, n):
 
 
 def apply_filter(data, filter):
-    filtered = np.zeros(data.shape)
-    for u in range(0, data.shape[0]):
-        for v in range(0, data.shape[1]):
-            value = distance(u, v, data)
-            filtered[u][v] = data[u][v] * filter(value)
+    filtered = np.empty(data.shape, dtype=complex)
+    for c in range(0, data.shape[0]):
+        for u in range(0, data.shape[1]):
+            for v in range(0, data.shape[2]):
+                value = distance(u, v, data[c])
+                filtered[c][u][v] = data[c][u][v] * filter(value)
 
     return filtered
 

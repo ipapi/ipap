@@ -24,10 +24,10 @@ class Image:
         adata = np.reshape(np.asarray(pilimage.getdata(band=3)), pilimage.size[::-1])
 
         image._dft = np.array([
-            np.fft.fft2(rdata),
-            np.fft.fft2(gdata),
-            np.fft.fft2(bdata),
-            np.fft.fft2(adata)
+            np.fft.fftshift(np.fft.fft2(rdata)),
+            np.fft.fftshift(np.fft.fft2(gdata)),
+            np.fft.fftshift(np.fft.fft2(bdata)),
+            np.fft.fftshift(np.fft.fft2(adata))
         ])
 
         return image
@@ -48,10 +48,10 @@ class Image:
         size = self._dft[0].shape[1]
         data = np.concatenate(
             (
-                np.split(np.fft.ifft2(self._dft[0]).astype(np.uint8), size, axis=1),
-                np.split(np.fft.ifft2(self._dft[1]).astype(np.uint8), size, axis=1),
-                np.split(np.fft.ifft2(self._dft[2]).astype(np.uint8), size, axis=1),
-                np.split(np.fft.ifft2(self._dft[3]).astype(np.uint8), size, axis=1)
+                np.split(np.fft.ifft2(np.fft.ifftshift(self._dft[0])).astype(np.uint8), size, axis=1),
+                np.split(np.fft.ifft2(np.fft.ifftshift(self._dft[1])).astype(np.uint8), size, axis=1),
+                np.split(np.fft.ifft2(np.fft.ifftshift(self._dft[2])).astype(np.uint8), size, axis=1),
+                np.split(np.fft.ifft2(np.fft.ifftshift(self._dft[3])).astype(np.uint8), size, axis=1)
             ),
             axis=2
         )
@@ -61,9 +61,9 @@ class Image:
     def dft_rgb(self):
         rgb = np.concatenate(
             (
-                np.split(np.fft.fftshift(self.dft[0]), self.dft[0].shape[1], axis=1),
-                np.split(np.fft.fftshift(self.dft[1]), self.dft[1].shape[1], axis=1),
-                np.split(np.fft.fftshift(self.dft[2]), self.dft[2].shape[1], axis=1)
+                np.split(self.dft[0], self.dft[0].shape[1], axis=1),
+                np.split(self.dft[1], self.dft[1].shape[1], axis=1),
+                np.split(self.dft[2], self.dft[2].shape[1], axis=1)
             ),
             axis=2
         )
