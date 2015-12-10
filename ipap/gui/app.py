@@ -115,16 +115,16 @@ class MainWindow(QMainWindow):
 
     def initlabels(self):
         # Initialize image containers
-        self.originalimage_container = QLabel('Original Image Placeholder')
-        self.originalimage_magnitude_container = QLabel('Original Magnitude Placeholder')
-        self.originalimage_realpart_container = QLabel('Original Real Part Placeholder')
-        self.originalimage_imaginarypart_container = QLabel('Original Imaginary Part Placeholder')
-        self.originalimage_phase_container = QLabel('Original Phase Placeholder')
-        self.reconstructedimage_container = QLabel('Reconstructed Image Placeholder')
-        self.reconstructedimage_magnitude_container = QLabel('Reconstructed Magnitude Placeholder')
-        self.reconstructedimage_realpart_container = QLabel('Reconstructed Imaginary Part Placeholder')
-        self.reconstructedimage_imaginarypart_container = QLabel('Reconstructed Real Part Placeholder')
-        self.reconstructedimage_phase_container = QLabel('Reconstructed Phase Placeholder')
+        self.originalimage_container = QLabel('Placeholder')
+        self.originalimage_magnitude_container = QLabel('laceholder')
+        self.originalimage_realpart_container = QLabel('Placeholder')
+        self.originalimage_imaginarypart_container = QLabel('Placeholder')
+        self.originalimage_phase_container = QLabel('Placeholder')
+        self.reconstructedimage_container = QLabel('Placeholder')
+        self.reconstructedimage_magnitude_container = QLabel('Placeholder')
+        self.reconstructedimage_realpart_container = QLabel('Placeholder')
+        self.reconstructedimage_imaginarypart_container = QLabel('Placeholder')
+        self.reconstructedimage_phase_container = QLabel('Placeholder')
 
         # Original image container layout
         originalimage_boxlayout = QVBoxLayout()
