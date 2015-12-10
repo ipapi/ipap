@@ -183,6 +183,12 @@ class MainWindow(QMainWindow):
         self.originalimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.original)))
         self.originalimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
 
+        self.reconstructedimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.original)))
+
+        self.reconstructedimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.original)))
+        self.reconstructedimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.original)))
+        self.reconstructedimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
+
     def initmenubar(self):
         openfile_other = QAction('Open File', self)
         openfile_other.setShortcut('Ctrl+O')
