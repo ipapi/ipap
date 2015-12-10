@@ -21,8 +21,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout
 )
 
-from PyQt5.QtCore import Qt
-from PyQt5.Qt import QDoubleValidator
+from PyQt5.QtCore import Qt, QDir
 from PyQt5.QtGui import QImage, QPixmap, QColor
 
 from ipap.core.imageprocessor import ImageProcessor
@@ -97,15 +96,12 @@ class MainWindow(QMainWindow):
         self._function_gaussion = 2
 
         self.processor = ImageProcessor()
-        self.processor.original = Image.from_file('lena.png')
-        self.processor.apply()
         self.initui()
 
     def initui(self):
         self.initmenubar()
         self.initoptionspanel()
         self.initlabels()
-        self.updateimages()
         centralwidget = self.initcentralwidget()
         self.setCentralWidget(centralwidget)
         self.statusBar()
@@ -184,18 +180,18 @@ class MainWindow(QMainWindow):
         self.reconstructedimage_phase_box.setLayout(reconstructedimage_phase_boxlayout)
 
     def updateimages(self):
-        originalimage = self.processor.original
-        self.originalimage_container.setPixmap(QPixmap.fromImage(make_qimage(originalimage)))
+        self.originalimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.original)))
 
     def initmenubar(self):
-        opennewfile = QAction('Open File', self)
-        opennewfile.setShortcut('Ctrl+O')
-        opennewfile.setStatusTip('Open File')
-        opennewfile.triggered.connect(self.showdialog)
+        openfile_other = QAction('Open File', self)
+        openfile_other.setShortcut('Ctrl+O')
+        openfile_other.setStatusTip('Open File')
+        openfile_other.triggered.connect(lambda: self.opendialog(QDir.homePath()))
 
-        opendbfile = QAction('Open from DB', self)
-        opendbfile.setShortcut('Ctrl+Shift+O')
-        opendbfile.setStatusTip('Open file from database')
+        openfile_db = QAction('Open from DB', self)
+        openfile_db.setShortcut('Ctrl+Shift+O')
+        openfile_db.setStatusTip('Open file from database')
+        openfile_db.triggered.connect(lambda: self.opendialog('images'))
 
         exitprogram = QAction('Quit', self)
         exitprogram.setShortcut('Ctrl+Q')
@@ -203,8 +199,8 @@ class MainWindow(QMainWindow):
         exitprogram.triggered.connect(self._app.closeAllWindows)
 
         menufile = self.menuBar().addMenu('File')
-        menufile.addAction(opennewfile)
-        menufile.addAction(opendbfile)
+        menufile.addAction(openfile_other)
+        menufile.addAction(openfile_db)
         menufile.addSeparator()
         menufile.addAction(exitprogram)
 
@@ -225,8 +221,6 @@ class MainWindow(QMainWindow):
         self.filterfunction.addItem('Gaussion')
         self.filterfunction.currentIndexChanged.connect(self.filterfunctionlistener)
         self.filterfunction.setEnabled(False)
-
-        doublevalidator = QDoubleValidator()
 
         self.filtercutoff = QDoubleSpinBox()
         self.filtercutoff.setValue(0.0)
@@ -326,8 +320,12 @@ class MainWindow(QMainWindow):
         if index != self._function_butterworth:
             self.filterorder.setValue(1.0)
 
-    def showdialog(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', '/home')
+    def opendialog(self, path):
+        filepath = QFileDialog.getOpenFileName(self, 'Open file', path)
+        if filepath[0] != '':
+            self.processor.original = Image.from_file(filepath[0])
+            self.processor.apply()
+            self.updateimages()
 
     def closeEvent(self,event):
         reply = QMessageBox.question(
