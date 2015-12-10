@@ -207,14 +207,16 @@ class MainWindow(QMainWindow):
 
         filtertype = QComboBox()
         filtertype.addItem('None')
-        filtertype.addItem('Alpha')
-        filtertype.addItem('Bravo')
+        filtertype.addItem('Lowpass')
+        filtertype.addItem('Highpass')
+        filtertype.addItem('Bandreject')
+        filtertype.addItem('Bandaccept')
         filtertype.currentIndexChanged.connect(self.filtertypelistener)
 
         self.filterfunction = QComboBox()
-        self.filterfunction.addItem('Charlie')
-        self.filterfunction.addItem('Delta')
+        self.filterfunction.addItem('Ideal')
         self.filterfunction.addItem('Butterworth')
+        self.filterfunction.addItem('Gaussion')
         self.filterfunction.currentIndexChanged.connect(self.filterfunctionlistener)
         self.filterfunction.setEnabled(False)
 
