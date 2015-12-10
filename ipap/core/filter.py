@@ -42,7 +42,7 @@ def lowpass_gauss(value, cutoff):
 
 
 def highpass_gauss(value, cutoff):
-    return exp(-(value**2 / (2 * cutoff**2)))
+    return 1 - exp(-(value**2 / (2 * cutoff**2)))
 
 
 def lowpass_butterworth(value, cutoff, n):
