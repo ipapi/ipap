@@ -87,11 +87,17 @@ class MainWindow(QMainWindow):
         super().__init__()
         self._app = app
 
+        self._type_none = 0
+        self._type_lowpass = 1
+        self._type_highpass = 2
+        self._type_bandreject = 3
+        self._type_bandaccept = 4
+        self._function_ideal = 0
+        self._function_butterworth = 1
+        self._function_gaussion = 2
+
         self.processor = ImageProcessor()
         self.processor.original = Image.from_file('lena.png')
-
-        # self.processor.filter_type = 'lowpass'
-        # self.processor.filter_function = 'ideal'
         self.processor.apply()
         self.initui()
 
@@ -300,7 +306,7 @@ class MainWindow(QMainWindow):
 
     def filtertypelistener(self, index):
         print('Type', index)
-        if index == 0:
+        if index == self._type_none:
             self.filterfunction.setEnabled(False)
             self.filterfunction.setCurrentIndex(0)
             self.filtercutoff.setEnabled(False)
@@ -316,8 +322,8 @@ class MainWindow(QMainWindow):
 
     def filterfunctionlistener(self, index):
         print('Function', index)
-        self.filterorder.setEnabled(index == 2)
-        if index != 2:
+        self.filterorder.setEnabled(index == self._function_butterworth)
+        if index != self._function_butterworth:
             self.filterorder.setValue(1.0)
 
     def showdialog(self):
