@@ -188,18 +188,42 @@ class MainWindow(QMainWindow):
         self.reconstructedimage_phase_box.setLayout(reconstructedimage_phase_boxlayout)
 
     def updateimages(self):
-        self.originalimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.original)))
+        # Get pixelmap of each image
+        originalimage_pixelmap = QPixmap.fromImage(make_qimage(self.processor.original))
+        originalimage_magnitude_pixelmap = QPixmap.fromImage(make_dftmag_qimage(self.processor.original))
+        originalimage_realpart_pixelmap = QPixmap.fromImage(make_dftreal_qimage(self.processor.original))
+        originalimage_imaginarypart_pixelmap = QPixmap.fromImage(make_dftimag_qimage(self.processor.original))
+        originalimage_phase_pixelmap = QPixmap.fromImage(make_dftphase_qimage(self.processor.original))
+        reconstructedimage_pixelmap = QPixmap.fromImage(make_qimage(self.processor.output))
+        reconstructedimage_magnitude_pixelmap = QPixmap.fromImage(make_dftmag_qimage(self.processor.output))
+        reconstructedimage_realpart_pixelmap = QPixmap.fromImage(make_dftreal_qimage(self.processor.output))
+        reconstructedimage_imaginarypart_pixelmap = QPixmap.fromImage(make_dftimag_qimage(self.processor.output))
+        reconstructedimage_phase_pixelmap = QPixmap.fromImage(make_dftphase_qimage(self.processor.output))
 
-        self.originalimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.original)))
-        self.originalimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.original)))
-        self.originalimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.original)))
-        self.originalimage_phase_container.setPixmap(QPixmap.fromImage(make_dftphase_qimage(self.processor.original)))
+        # Scale each image by 200 x 200
+        originalimage_pixelmap = originalimage_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        originalimage_magnitude_pixelmap = originalimage_magnitude_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        originalimage_realpart_pixelmap = originalimage_realpart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        originalimage_imaginarypart_pixelmap = originalimage_imaginarypart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        originalimage_phase_pixelmap = originalimage_phase_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        reconstructedimage_pixelmap = reconstructedimage_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        reconstructedimage_magnitude_pixelmap = reconstructedimage_magnitude_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        reconstructedimage_realpart_pixelmap = reconstructedimage_realpart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        reconstructedimage_imaginarypart_pixelmap = reconstructedimage_imaginarypart_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
+        reconstructedimage_phase_pixelmap = reconstructedimage_phase_pixelmap.scaled(200,200, Qt.KeepAspectRatio)
 
-        self.reconstructedimage_container.setPixmap(QPixmap.fromImage(make_qimage(self.processor.output)))
-        self.reconstructedimage_magnitude_container.setPixmap(QPixmap.fromImage(make_dftmag_qimage(self.processor.output)))
-        self.reconstructedimage_realpart_container.setPixmap(QPixmap.fromImage(make_dftreal_qimage(self.processor.output)))
-        self.reconstructedimage_imaginarypart_container.setPixmap(QPixmap.fromImage(make_dftimag_qimage(self.processor.output)))
-        self.reconstructedimage_phase_container.setPixmap(QPixmap.fromImage(make_dftphase_qimage(self.processor.output)))
+        # Update image containers
+        self.originalimage_container.setPixmap(originalimage_pixelmap)
+        self.originalimage_magnitude_container.setPixmap(originalimage_magnitude_pixelmap)
+        self.originalimage_realpart_container.setPixmap(originalimage_realpart_pixelmap)
+        self.originalimage_imaginarypart_container.setPixmap(originalimage_imaginarypart_pixelmap)
+        self.originalimage_phase_container.setPixmap(originalimage_phase_pixelmap)
+        self.reconstructedimage_container.setPixmap(reconstructedimage_pixelmap)
+        self.reconstructedimage_magnitude_container.setPixmap(reconstructedimage_magnitude_pixelmap)
+        self.reconstructedimage_realpart_container.setPixmap(reconstructedimage_realpart_pixelmap)
+        self.reconstructedimage_imaginarypart_container.setPixmap(reconstructedimage_imaginarypart_pixelmap)
+        self.reconstructedimage_phase_container.setPixmap(reconstructedimage_phase_pixelmap)
+
 
     def initmenubar(self):
         openfile_other = QAction('Open File', self)
