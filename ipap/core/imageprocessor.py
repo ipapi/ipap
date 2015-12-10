@@ -1,6 +1,7 @@
+import numpy as np
+
 import ipap.core.filter as filter
 from ipap.core.image import Image
-
 
 class ImageProcessor:
     def __init__(self):
@@ -39,3 +40,10 @@ class ImageProcessor:
                                                  self.original.dft,
                                                  self.filter_cutoff,
                                                  self.filter_order)
+
+    def mse(self):
+        #self.original._pil.getdata(band=0)
+        #self.output._pil.getdata(band=0)
+        error = np.sum((self.original.data - self.output.data) ** 2)
+        error /= float(self.original.data.shape[0] * self.output.data.shape[1])
+        return error

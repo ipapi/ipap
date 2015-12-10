@@ -221,6 +221,9 @@ class MainWindow(QMainWindow):
         self.reconstructedimage_imaginarypart_container.setPixmap(reconstructedimage_imaginarypart_pixelmap)
         self.reconstructedimage_phase_container.setPixmap(reconstructedimage_phase_pixelmap)
 
+        error = self.processor.mse()
+        self.mselabel.setNum(error)
+
     def initmenubar(self):
         openfile_other = QAction('Open File', self)
         openfile_other.setShortcut('Ctrl+O')
@@ -294,10 +297,10 @@ class MainWindow(QMainWindow):
         options.setFeatures(QDockWidget.DockWidgetMovable)
         options.setWidget(filterbox)
 
-        equallabel = QLabel('No image selected')
+        self.mselabel = QLabel('No image selected')
 
         infoform = QFormLayout()
-        infoform.addRow('Equal:', equallabel)
+        infoform.addRow('MSE:', self.mselabel)
 
         imagebox = QGroupBox('Image')
         imagebox.setLayout(infoform)
