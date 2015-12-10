@@ -58,7 +58,7 @@ def apply_filter(data, filter):
     for u in range(0, data.shape[0]):
         for v in range(0, data.shape[1]):
             value = distance(u, v, data)
-            filtered[u][v] = data[u][v] * function(value)
+            filtered[u][v] = data[u][v] * filter(value)
 
     return filtered
 

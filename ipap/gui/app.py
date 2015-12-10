@@ -49,7 +49,6 @@ def make_qimage(image):
 def make_dftmag_qimage(image):
     imageformat = QImage.Format_RGBA8888
     imagedata = image.dft_magnitude
-    print(imagedata.flatten())
     qimage = QImage(imagedata.flatten(),
                     imagedata.shape[1],
                     imagedata.shape[0],
@@ -80,7 +79,6 @@ def make_dftimag_qimage(image):
 def make_dftphase_qimage(image):
     imageformat = QImage.Format_RGBA8888
     imagedata = image.dft_phase
-    print(imagedata)
     qimage = QImage(imagedata.flatten(),
                     imagedata.shape[1],
                     imagedata.shape[0],
@@ -331,10 +329,14 @@ class MainWindow(QMainWindow):
         return centralwidget
 
     def filtercutofflistener(self, value):
-        print('cutoff', value)
+        self.processor.filter_cutoff = value
+        self.processor.apply()
+        self.updateimages()
 
     def filterbandwidthlistener(self, value):
-        print('Bandwidth', value)
+        self.processor.band_width = value
+        self.processor.apply()
+        self.updateimages()
 
     def filterorderlistener(self, value):
         print('Order', value)
@@ -355,11 +357,33 @@ class MainWindow(QMainWindow):
             self.filtercutoff.setEnabled(True)
             self.filterbandwidth.setEnabled(True)
 
+        typemap = [
+            None,
+            'lowpass',
+            'highpass',
+            'reject',
+            'accept'
+        ]
+
+        self.processor.filter_type = typemap[index]
+        self.processor.apply()
+        self.updateimages()
+
     def filterfunctionlistener(self, index):
         print('Function', index)
         self.filterorder.setEnabled(index == self._function_butterworth)
         if index != self._function_butterworth:
             self.filterorder.setValue(1.0)
+
+        funcmap = [
+            'ideal',
+            'butterworth',
+            'gauss'
+        ]
+
+        self.processor.filter_function = funcmap[index]
+        self.processor.apply()
+        self.updateimages()
 
     def opendialog(self, path):
         filepath = QFileDialog.getOpenFileName(self, 'Open file', path)

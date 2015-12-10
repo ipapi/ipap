@@ -10,8 +10,8 @@ class ImageProcessor:
         # None, 'lowpass', 'highpass', 'bandpass', 'bandreject'
         self.filter_type = None
 
-        # None, 'ideal', 'butterworth', 'gauss'
-        self.filter_function = None
+        # 'ideal', 'butterworth', 'gauss'
+        self.filter_function = 'ideal'
 
         # Cutoff frequency for the filter
         self.filter_cutoff = 1.0
@@ -20,7 +20,13 @@ class ImageProcessor:
         self.band_width = 1.0
 
     def apply(self):
-        if self.filter_function == 'ideal':
+        print("Applying {}_{} with cutoff {} and bandwidth {}".format(self.filter_type,
+                                                                      self.filter_function,
+                                                                      self.filter_cutoff,
+                                                                      self.band_width))
+        if self.filter_type is None:
+            self.output.dft = self.original.dft
+        elif self.filter_function == 'ideal':
             self.output.dft = filter.ideal(self.filter_type,
                                            self.original.dft,
                                            self.filter_cutoff)
@@ -33,5 +39,3 @@ class ImageProcessor:
                                                  self.original.dft,
                                                  self.filter_cutoff,
                                                  self.filter_order)
-        else:
-            self.output.dft = self.original.dft
