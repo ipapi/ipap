@@ -98,21 +98,21 @@ class Image:
 
     @property
     def dft_magnitude(self):
-        rgb = np.log(abs(self.dft_rgb))
+        rgb = 1 + np.log(abs(self.dft_rgb))
         rgb = rgb * (255 / np.amax(rgb))
 
         return self._add_alpha(rgb).astype(np.uint8)
 
     @property
     def dft_real(self):
-        rgb = np.log(abs(self.dft_rgb.real))
+        rgb = 1 + np.log(abs(self.dft_rgb.real))
         rgb = rgb * (255 / np.amax(rgb))
 
         return self._add_alpha(rgb).astype(np.uint8)
 
     @property
     def dft_imag(self):
-        rgb = np.log(abs(self.dft_rgb.imag))
+        rgb = 1 + np.log(abs(self.dft_rgb.imag))
         rgb = rgb * (255 / np.amax(rgb))
 
         return self._add_alpha(rgb).astype(np.uint8)
