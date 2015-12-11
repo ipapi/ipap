@@ -112,6 +112,15 @@ class MainWindow(QMainWindow):
         self.initui()
 
     def initui(self):
+        self.setGeometry(
+            QStyle.alignedRect(
+                Qt.LeftToRight,
+                Qt.AlignCenter,
+                self.size(),
+                self._app.desktop().availableGeometry()
+            )
+        )
+
         self.initmenubar()
         self.initoptionspanel()
         self.initinformationpanel()
