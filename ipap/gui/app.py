@@ -214,17 +214,17 @@ class MainWindow(QMainWindow):
         reconstructedimage_imaginarypart_pixelmap = QPixmap.fromImage(make_dftimag_qimage(self.processor.output))
         reconstructedimage_phase_pixelmap = QPixmap.fromImage(make_dftphase_qimage(self.processor.output))
 
-        # Scale each image by 200 x 200
-        originalimage_pixelmap = originalimage_pixelmap.scaled(250,250, Qt.KeepAspectRatio)
-        originalimage_magnitude_pixelmap = originalimage_magnitude_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        originalimage_realpart_pixelmap = originalimage_realpart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        originalimage_imaginarypart_pixelmap = originalimage_imaginarypart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        originalimage_phase_pixelmap = originalimage_phase_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        reconstructedimage_pixelmap = reconstructedimage_pixelmap.scaled(250,250, Qt.KeepAspectRatio)
-        reconstructedimage_magnitude_pixelmap = reconstructedimage_magnitude_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        reconstructedimage_realpart_pixelmap = reconstructedimage_realpart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        reconstructedimage_imaginarypart_pixelmap = reconstructedimage_imaginarypart_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
-        reconstructedimage_phase_pixelmap = reconstructedimage_phase_pixelmap.scaled(100,100, Qt.KeepAspectRatio)
+        # Scale each image by 290 x 290
+        originalimage_pixelmap = originalimage_pixelmap.scaled(290,290, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        originalimage_magnitude_pixelmap = originalimage_magnitude_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        originalimage_realpart_pixelmap = originalimage_realpart_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        originalimage_imaginarypart_pixelmap = originalimage_imaginarypart_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        originalimage_phase_pixelmap = originalimage_phase_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        reconstructedimage_pixelmap = reconstructedimage_pixelmap.scaled(290,290, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        reconstructedimage_magnitude_pixelmap = reconstructedimage_magnitude_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        reconstructedimage_realpart_pixelmap = reconstructedimage_realpart_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        reconstructedimage_imaginarypart_pixelmap = reconstructedimage_imaginarypart_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        reconstructedimage_phase_pixelmap = reconstructedimage_phase_pixelmap.scaled(120,120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
         # Update image containers
         self.originalimage_container.setPixmap(originalimage_pixelmap)
