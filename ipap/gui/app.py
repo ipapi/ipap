@@ -364,7 +364,8 @@ class MainWindow(QMainWindow):
         self._update_processor()
 
     def filterorderlistener(self, value):
-        print('Order', value)
+        self.processor.order = value
+        self._update_processor()
 
     def filtertypelistener(self, index):
         print('Type', index)

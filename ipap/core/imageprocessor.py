@@ -20,6 +20,9 @@ class ImageProcessor:
         # Width of the band when using 'bandpass' or 'bandreject'
         self.band_width = 1.0
 
+        # nth order when using butterworth
+        self.order = 1.0
+
     def _ideal(self, value):
         return filter.ideal(value, self.filter_cutoff, ftype=self.filter_type, bwidth=self.band_width)
 
@@ -27,7 +30,7 @@ class ImageProcessor:
         return filter.gauss(value, self.filter_cutoff, ftype=self.filter_type, bwidth=self.band_width)
 
     def _butterworth(self, value):
-        return filter.butterworth(value, self.filter_cutoff, self.band_width, ftype=self.filter_type, bwidth=self.band_width)
+        return filter.butterworth(value, self.filter_cutoff, self.order, ftype=self.filter_type, bwidth=self.band_width)
 
     def apply(self):
         print("Applying {}_{} with cutoff {} and bandwidth {}".format(self.filter_type,
