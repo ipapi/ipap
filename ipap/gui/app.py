@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
     def initui(self):
         self.initmenubar()
         self.initoptionspanel()
+        self.initinformationpanel()
         self.initlabels()
         centralwidget = self.initcentralwidget()
         self.setCentralWidget(centralwidget)
@@ -292,11 +293,13 @@ class MainWindow(QMainWindow):
         filterbox = QGroupBox('Filter')
         filterbox.setLayout(formlayout)
 
-        options = QDockWidget('Options', self)
+        options = QDockWidget('Options')
         options.setFeatures(QDockWidget.DockWidgetFloatable)
         options.setFeatures(QDockWidget.DockWidgetMovable)
         options.setWidget(filterbox)
+        self.addDockWidget(Qt.RightDockWidgetArea, options)
 
+    def initinformationpanel(self):
         self.mselabel = QLabel('No image selected')
 
         infoform = QFormLayout()
@@ -305,12 +308,10 @@ class MainWindow(QMainWindow):
         imagebox = QGroupBox('Image')
         imagebox.setLayout(infoform)
 
-        information = QDockWidget('Information', self)
+        information = QDockWidget('Information')
         information.setFeatures(QDockWidget.DockWidgetFloatable)
         information.setFeatures(QDockWidget.DockWidgetMovable)
         information.setWidget(imagebox)
-
-        self.addDockWidget(Qt.RightDockWidgetArea, options)
         self.addDockWidget(Qt.RightDockWidgetArea, information)
 
     def initcentralwidget(self):
