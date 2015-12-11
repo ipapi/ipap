@@ -1,4 +1,6 @@
 import sys
+import asyncio
+from multiprocessing import Pool
 
 from PyQt5.QtWidgets import (
     QApplication,
@@ -18,10 +20,11 @@ from PyQt5.QtWidgets import (
     QDoubleSpinBox,
     QGridLayout,
     QFrame,
-    QVBoxLayout
+    QVBoxLayout,
+    QStyle
 )
 
-from PyQt5.QtCore import Qt, QDir
+from PyQt5.QtCore import Qt, QDir, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QColor, QMovie
 
 from ipap.core.imageprocessor import ImageProcessor
@@ -101,6 +104,10 @@ class MainWindow(QMainWindow):
         self._function_butterworth = 1
         self._function_gaussion = 2
 
+        self.pool = Pool()
+        self.async = None
+        self.pending_update = False
+        self.pending_image = None
         self.processor = ImageProcessor()
         self.initui()
 
@@ -341,13 +348,11 @@ class MainWindow(QMainWindow):
 
     def filtercutofflistener(self, value):
         self.processor.filter_cutoff = value
-        self.processor.apply()
-        self.updateimages()
+        self._update_processor()
 
     def filterbandwidthlistener(self, value):
         self.processor.band_width = value
-        self.processor.apply()
-        self.updateimages()
+        self._update_processor()
 
     def filterorderlistener(self, value):
         print('Order', value)
@@ -377,8 +382,7 @@ class MainWindow(QMainWindow):
         ]
 
         self.processor.filter_type = typemap[index]
-        self.processor.apply()
-        self.updateimages()
+        self._update_processor()
 
     def filterfunctionlistener(self, index):
         print('Function', index)
@@ -393,15 +397,42 @@ class MainWindow(QMainWindow):
         ]
 
         self.processor.filter_function = funcmap[index]
-        self.processor.apply()
-        self.updateimages()
+        self._update_processor()
+
+    def check_pending_image(self):
+        if self.pending_image is not None:
+            print('Loading pending image')
+
+            QTimer.singleShot(0, self.load_image)
+            return True
+        else:
+            return False
+
+    def load_image(self):
+        print("loading BLA {}".format(self.pending_image))
+        def success(image):
+            print('Opened image')
+            if not self.check_pending_image():
+                self.processor.original = image
+                QTimer.singleShot(0, self._update_processor)
+
+        if self.async is None or self.async.ready():
+            print('Starting async read of image')
+            path = self.pending_image
+            self.pending_image = None
+            self.async = self.pool.apply_async(MainWindow.parse_image,
+                                               args=[path],
+                                               callback=success)
+
+    def parse_image(path):
+        print('Opening image')
+        return Image.from_file(path)
 
     def opendialog(self, path):
         filepath = QFileDialog.getOpenFileName(self, 'Open file', path)
         if filepath[0] != '':
-            self.processor.original = Image.from_file(filepath[0])
-            self.processor.apply()
-            self.updateimages()
+            self.pending_image = filepath[0]
+            self.load_image()
 
     def closeEvent(self,event):
         reply = QMessageBox.question(
@@ -416,6 +447,39 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def _apply_processor(processor):
+        processor.apply()
+        return processor
+
+    def _update_processor(self):
+        def success(processor):
+            print('Finished async')
+
+            if self.pending_update == True:
+                self.pending_update = False
+                QTimer.singleShot(0, self._update_processor)
+            else:
+                print('Updating images')
+                self.processor = processor
+                self.updateimages()
+
+            if self.check_pending_image():
+                self.pending_update = False
+
+        def error(e):
+            print('Error updating images: {}'.format(e))
+
+        if self.async is None or self.async.ready():
+            self.async = self.pool.apply_async(MainWindow._apply_processor,
+                                                     args=[self.processor],
+                                                     callback=success,
+                                                     error_callback=error)
+            print('Started async')
+        else:
+            self.pending_update = True
+            print('Add pending update')
+
 
 def run_app(argv):
     app = QApplication(argv)
