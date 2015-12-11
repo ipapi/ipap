@@ -283,17 +283,19 @@ class MainWindow(QMainWindow):
 
         self.filtercutoff = QDoubleSpinBox()
         self.filtercutoff.setValue(0.0)
+        self.filtercutoff.setRange(0.0, 10000.0)
         self.filtercutoff.valueChanged.connect(self.filtercutofflistener)
         self.filtercutoff.setEnabled(False)
 
         self.filterbandwidth = QDoubleSpinBox()
         self.filterbandwidth.setValue(1.0)
-        self.filterbandwidth.setMinimum(1.0)
+        self.filterbandwidth.setRange(0.0, 10000.0)
         self.filterbandwidth.valueChanged.connect(self.filterbandwidthlistener)
         self.filterbandwidth.setEnabled(False)
 
         self.filterorder = QDoubleSpinBox()
         self.filterorder.setValue(1.0)
+        self.filterorder.setRange(0.0, 10000.0)
         self.filterorder.valueChanged.connect(self.filterorderlistener)
         self.filterorder.setEnabled(False)
 
