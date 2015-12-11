@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
         self._type_lowpass = 1
         self._type_highpass = 2
         self._type_bandreject = 3
-        self._type_bandaccept = 4
+        self._type_bandpass = 4
         self._function_ideal = 0
         self._function_butterworth = 1
         self._function_gaussion = 2
@@ -271,13 +271,13 @@ class MainWindow(QMainWindow):
         filtertype.addItem('Lowpass')
         filtertype.addItem('Highpass')
         filtertype.addItem('Bandreject')
-        filtertype.addItem('Bandaccept')
+        filtertype.addItem('Bandpass')
         filtertype.currentIndexChanged.connect(self.filtertypelistener)
 
         self.filterfunction = QComboBox()
         self.filterfunction.addItem('Ideal')
         self.filterfunction.addItem('Butterworth')
-        self.filterfunction.addItem('Gaussion')
+        self.filterfunction.addItem('Gaussian')
         self.filterfunction.currentIndexChanged.connect(self.filterfunctionlistener)
         self.filterfunction.setEnabled(False)
 
