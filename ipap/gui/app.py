@@ -427,6 +427,7 @@ class MainWindow(QMainWindow):
 
         if self.async is None or self.async.ready():
             print('Starting async read of image')
+            self._show_loader()
             path = self.pending_image
             self.pending_image = None
             self.async = self.pool.apply_async(MainWindow.parse_image,
@@ -461,6 +462,12 @@ class MainWindow(QMainWindow):
         processor.apply()
         return processor
 
+    def _show_loader(self):
+        self.loadercontainer.setVisible(True)
+
+    def _hide_loader(self):
+        self.loadercontainer.setVisible(False)
+
     def _update_processor(self):
         def success(processor):
             print('Finished async')
@@ -472,6 +479,7 @@ class MainWindow(QMainWindow):
                 print('Updating images')
                 self.processor = processor
                 self.updateimages()
+                QTimer.singleShot(0, self._hide_loader)
 
             if self.check_pending_image():
                 self.pending_update = False
@@ -480,6 +488,7 @@ class MainWindow(QMainWindow):
             print('Error updating images: {}'.format(e))
 
         if self.async is None or self.async.ready():
+            self._show_loader()
             self.async = self.pool.apply_async(MainWindow._apply_processor,
                                                      args=[self.processor],
                                                      callback=success,
