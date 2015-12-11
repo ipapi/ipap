@@ -283,19 +283,17 @@ class MainWindow(QMainWindow):
 
         self.filtercutoff = QDoubleSpinBox()
         self.filtercutoff.setValue(0.0)
-        self.filtercutoff.setRange(-1000.0, 1000.0)
         self.filtercutoff.valueChanged.connect(self.filtercutofflistener)
         self.filtercutoff.setEnabled(False)
 
         self.filterbandwidth = QDoubleSpinBox()
-        self.filterbandwidth.setValue(0.0)
-        self.filterbandwidth.setRange(-1000.0, 1000.0)
+        self.filterbandwidth.setValue(1.0)
+        self.filterbandwidth.setMinimum(1.0)
         self.filterbandwidth.valueChanged.connect(self.filterbandwidthlistener)
         self.filterbandwidth.setEnabled(False)
 
         self.filterorder = QDoubleSpinBox()
         self.filterorder.setValue(1.0)
-        self.filterorder.setRange(-1000.0, 1000.0)
         self.filterorder.valueChanged.connect(self.filterorderlistener)
         self.filterorder.setEnabled(False)
 
@@ -360,8 +358,10 @@ class MainWindow(QMainWindow):
         self._update_processor()
 
     def filterbandwidthlistener(self, value):
-        self.processor.band_width = value
-        self._update_processor()
+        if value != 0.0:
+            self.processor.band_width = value
+            self.processor.apply()
+            self._update_processor()
 
     def filterorderlistener(self, value):
         self.processor.order = value

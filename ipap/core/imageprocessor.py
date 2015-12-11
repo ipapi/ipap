@@ -48,8 +48,7 @@ class ImageProcessor:
                 self.output.dft = filter.apply_filter(self.original.dft, lambda value: self._butterworth(value))
 
     def mse(self):
-        #self.original._pil.getdata(band=0)
-        #self.output._pil.getdata(band=0)
+        channels = 3
         error = np.sum((self.original.data - self.output.data) ** 2)
-        error /= float(self.original.data.shape[0] * self.output.data.shape[1])
+        error /= float(channels * self.original.data.shape[0] * self.output.data.shape[1])
         return error
