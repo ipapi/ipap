@@ -420,21 +420,23 @@ class MainWindow(QMainWindow):
             return False
 
     def load_image(self):
-        print("loading BLA {}".format(self.pending_image))
-        def success(image):
-            print('Opened image')
-            if not self.check_pending_image():
-                self.processor.original = image
-                QTimer.singleShot(0, self._update_processor)
+        # print("loading BLA {}".format(self.pending_image))
+        # def success(image):
+        #     print('Opened image')
+        #     if not self.check_pending_image():
+        #         self.processor.original = image
+        #         QTimer.singleShot(0, self._update_processor)
 
-        if self.async is None or self.async.ready():
-            print('Starting async read of image')
-            self._show_loader()
-            path = self.pending_image
-            self.pending_image = None
-            self.async = self.pool.apply_async(MainWindow.parse_image,
-                                               args=[path],
-                                               callback=success)
+        # if self.async is None or self.async.ready():
+        #     print('Starting async read of image')
+        #     self._show_loader()
+        #     path = self.pending_image
+        #     self.pending_image = None
+        #     self.async = self.pool.apply_async(MainWindow.parse_image,
+        #                                        args=[path],
+        #                                        callback=success)
+        self.processor.original = MainWindow.parse_image(self.pending_image)
+        self._update_processor()
 
     def parse_image(path):
         print('Opening image')
@@ -471,34 +473,36 @@ class MainWindow(QMainWindow):
         self.loadercontainer.setVisible(False)
 
     def _update_processor(self):
-        def success(processor):
-            print('Finished async')
+        # def success(processor):
+        #     print('Finished async')
 
-            if self.pending_update == True:
-                self.pending_update = False
-                QTimer.singleShot(0, self._update_processor)
-            else:
-                print('Updating images')
-                self.processor = processor
-                self.updateimages()
-                QTimer.singleShot(0, self._hide_loader)
+        #     if self.pending_update == True:
+        #         self.pending_update = False
+        #         QTimer.singleShot(0, self._update_processor)
+        #     else:
+        #         print('Updating images')
+        #         self.processor = processor
+        #         self.updateimages()
+        #         QTimer.singleShot(0, self._hide_loader)
 
-            if self.check_pending_image():
-                self.pending_update = False
+        #     if self.check_pending_image():
+        #         self.pending_update = False
 
-        def error(e):
-            print('Error updating images: {}'.format(e))
+        # def error(e):
+        #     print('Error updating images: {}'.format(e))
 
-        if self.async is None or self.async.ready():
-            self._show_loader()
-            self.async = self.pool.apply_async(MainWindow._apply_processor,
-                                                     args=[self.processor],
-                                                     callback=success,
-                                                     error_callback=error)
-            print('Started async')
-        else:
-            self.pending_update = True
-            print('Add pending update')
+        # if self.async is None or self.async.ready():
+        #     self._show_loader()
+        #     self.async = self.pool.apply_async(MainWindow._apply_processor,
+        #                                              args=[self.processor],
+        #                                              callback=success,
+        #                                              error_callback=error)
+        #     print('Started async')
+        # else:
+        #     self.pending_update = True
+        #     print('Add pending update')
+        MainWindow._apply_processor(self.processor)
+        self.updateimages()
 
 
 def run_app(argv):
