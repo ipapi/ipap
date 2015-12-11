@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (
 )
 
 from PyQt5.QtCore import Qt, QDir
-from PyQt5.QtGui import QImage, QPixmap, QColor
+from PyQt5.QtGui import QImage, QPixmap, QColor, QMovie
 
 from ipap.core.imageprocessor import ImageProcessor
 from ipap.core.image import Image
@@ -283,12 +283,19 @@ class MainWindow(QMainWindow):
         self.filterorder.valueChanged.connect(self.filterorderlistener)
         self.filterorder.setEnabled(False)
 
+        loader = QMovie('loader.gif')
+        loader.start()
+        self.loadercontainer = QLabel()
+        self.loadercontainer.setMovie(loader)
+        self.loadercontainer.setVisible(False)
+
         formlayout = QFormLayout()
         formlayout.addRow('Type', filtertype)
         formlayout.addRow('Function', self.filterfunction)
         formlayout.addRow('Cut off', self.filtercutoff)
         formlayout.addRow('Bandwidth', self.filterbandwidth)
         formlayout.addRow('Order', self.filterorder)
+        formlayout.addRow('', self.loadercontainer)
 
         filterbox = QGroupBox('Filter')
         filterbox.setLayout(formlayout)
