@@ -449,18 +449,7 @@ class MainWindow(QMainWindow):
             self.load_image()
 
     def closeEvent(self,event):
-        reply = QMessageBox.question(
-            self,
-            'Message',
-            "Are you Sure you want to quit?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes
-        )
-
-        if reply == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
+        event.accept()
 
     def _apply_processor(processor):
         processor.apply()
