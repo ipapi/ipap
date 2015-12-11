@@ -362,7 +362,6 @@ class MainWindow(QMainWindow):
     def filterbandwidthlistener(self, value):
         if value != 0.0:
             self.processor.band_width = value
-            self.processor.apply()
             self._update_processor()
 
     def filterorderlistener(self, value):
