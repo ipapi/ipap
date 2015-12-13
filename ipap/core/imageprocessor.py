@@ -48,6 +48,6 @@ class ImageProcessor:
                 self.output.dft = filter.apply_filter(self.original.dft, lambda value: self._butterworth(value))
 
     def mse(self):
-        error = np.sum((self.original.rgb - self.output.rgb) ** 2)
+        error = np.sum((self.original.rgb.astype(float) - self.output.rgb.astype(float)) ** 2)
         error /= self.original.rgb.size
         return error
