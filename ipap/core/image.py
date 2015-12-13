@@ -1,3 +1,5 @@
+import math
+
 from PIL import Image as PilImage
 import numpy as np
 
@@ -123,6 +125,6 @@ class Image:
     @property
     def dft_phase(self):
         rgb = np.angle(self.dft_rgb)
-        rgb = rgb * (255 / np.amax(rgb))
+        rgb = (rgb + math.pi) * (255 / (2 * math.pi))
 
         return self._add_alpha(rgb).astype(np.uint8)
