@@ -74,11 +74,14 @@ class Image:
     def dft(self, dft_data):
         self._dft = dft_data
 
-        self._rgb = np.array([
-            np.fft.ifft2(np.fft.ifftshift(self._dft[0])).real.clip(0.0, 255.0).astype(np.uint8),
-            np.fft.ifft2(np.fft.ifftshift(self._dft[1])).real.clip(0.0, 255.0).astype(np.uint8),
-            np.fft.ifft2(np.fft.ifftshift(self._dft[2])).real.clip(0.0, 255.0).astype(np.uint8)
+        rgb = np.array([
+            np.fft.ifft2(np.fft.ifftshift(self._dft[0])),
+            np.fft.ifft2(np.fft.ifftshift(self._dft[1])),
+            np.fft.ifft2(np.fft.ifftshift(self._dft[2]))
         ])
+
+        rgb = np.rint(rgb.real).clip(0.0, 255.0).astype(np.uint8)
+        self._rgb = rgb
 
         self._update_data()
 
