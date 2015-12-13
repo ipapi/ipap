@@ -18,7 +18,6 @@ class Image:
         image = Image()
 
         image._pil = pilimage
-        image.data = np.asarray(pilimage, dtype=np.uint8)
 
         rdata = np.reshape(np.asarray(pilimage.getdata(band=0)), pilimage.size[::-1])
         gdata = np.reshape(np.asarray(pilimage.getdata(band=1)), pilimage.size[::-1])
